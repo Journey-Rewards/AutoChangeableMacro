@@ -18,14 +18,13 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://www.github.com/swiftlang/swift-syntax.git", from: "600.0.0-latest"),
+        .package(url: "https://github.com/sjavora/swift-syntax-xcframeworks", exact: "600.0.1"),
     ],
     targets: [
         .macro(
             name: "AutoChangeableMacros",
             dependencies: [
-                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-                .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
+                .product(name: "SwiftSyntaxWrapper", package: "swift-syntax-xcframeworks")
             ]
         ),
         .target(name: "AutoChangeable", dependencies: ["AutoChangeableMacros"]),

@@ -94,6 +94,8 @@ public struct AutoChangeableMacro: MemberMacro {
             }
         case .getter:
             false
+        @unknown default:
+            false
         }
     }
 }
