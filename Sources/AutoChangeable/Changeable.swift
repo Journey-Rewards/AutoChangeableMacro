@@ -1,5 +1,3 @@
-import Foundation
-
 public protocol Changeable {
     associatedtype ChangeableCopy
     var changeableCopy: ChangeableCopy { get }

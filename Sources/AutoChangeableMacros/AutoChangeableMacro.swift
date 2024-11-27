@@ -1,6 +1,4 @@
-import SwiftCompilerPlugin
 import SwiftSyntax
-import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
 public struct AutoChangeableMacro: MemberMacro {
