@@ -18,7 +18,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/sjavora/swift-syntax-xcframeworks", exact: "600.0.1"),
+        .package(url: "https://github.com/openium/swift-syntax-xcframeworks", exact: "600.0.1"),
     ],
     targets: [
         .macro(

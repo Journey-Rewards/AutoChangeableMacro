@@ -1,12 +1,12 @@
 {
-  "originHash" : "9c794868c1dcc01859c7c1d785102bb7ff56e066f53e67fcc3e18bfda8d44fed",
+  "originHash" : "d0be11d115ed256bcea9f22b0da3dcdc50bc745133549eb2fc252c9168e25071",
   "pins" : [
     {
       "identity" : "swift-syntax-xcframeworks",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/sjavora/swift-syntax-xcframeworks",
+      "location" : "https://github.com/openium/swift-syntax-xcframeworks",
       "state" : {
-        "revision" : "9ee39cc55ade054ed2ec0c6a082476e6d4f074bd",
+        "revision" : "0c584c7322302046d18b1e3ed33419bd19db832a",
         "version" : "600.0.1"
       }
     }
