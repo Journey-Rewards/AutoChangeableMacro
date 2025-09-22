@@ -1,13 +1,13 @@
 {
-  "originHash" : "d0be11d115ed256bcea9f22b0da3dcdc50bc745133549eb2fc252c9168e25071",
+  "originHash" : "1f6531c0e4b52c153cd747f921b18d4a3e9b08d84385f1a03f9fb928cde9a502",
   "pins" : [
     {
-      "identity" : "swift-syntax-xcframeworks",
+      "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/openium/swift-syntax-xcframeworks",
+      "location" : "https://github.com/swiftlang/swift-syntax.git",
       "state" : {
-        "revision" : "0c584c7322302046d18b1e3ed33419bd19db832a",
-        "version" : "600.0.1"
+        "revision" : "f99ae8aa18f0cf0d53481901f88a0991dc3bd4a2",
+        "version" : "601.0.1"
       }
     }
   ],

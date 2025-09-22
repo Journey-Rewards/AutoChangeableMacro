@@ -32,17 +32,17 @@ public enum TypeDescription: Codable, Hashable, Comparable, Sendable {
     indirect case closure(arguments: [TypeDescription], isAsync: Bool, doesThrow: Bool, returnType: TypeDescription)
     /// A type that can't be represented by the above cases.
     case unknown(text: String)
-
+    
     /// A shortcut for creating a `simple` case without any generic types.
     public static func simple(name: String) -> TypeDescription {
         .simple(name: name, generics: [])
     }
-
+    
     /// A shortcut for creating a `nested` case without any generic types.
     public static func nested(name: String, parentType: TypeDescription) -> TypeDescription {
         .nested(name: name, parentType: parentType, generics: [])
     }
-
+    
     /// A canonical representation of this type that can be used in source code.
     public var asSource: String {
         switch self {
@@ -116,27 +116,27 @@ public enum TypeDescription: Codable, Hashable, Comparable, Sendable {
             return text
         }
     }
-
+    
     public static func < (lhs: TypeDescription, rhs: TypeDescription) -> Bool {
         lhs.asSource < rhs.asSource
     }
-
+    
     public enum VoidSpelling: String, Codable, Hashable, Sendable, CustomStringConvertible {
         /// The `()` spelling.
         case tuple
         /// The `Void` spelling.
         case identifier
-
+        
         public static func == (_: VoidSpelling, _: VoidSpelling) -> Bool {
             // Void is functionally equivalent no matter how it is spelled.
             true
         }
-
+        
         public func hash(into hasher: inout Hasher) {
             // Void representations have an equivalent hash because they are equivalent types.
             hasher.combine(0)
         }
-
+        
         public var description: String {
             switch self {
             case .identifier:
@@ -146,33 +146,33 @@ public enum TypeDescription: Codable, Hashable, Comparable, Sendable {
             }
         }
     }
-
+    
     public struct TupleElement: Codable, Hashable, Sendable {
         init(label: String? = nil, _ typeDescription: TypeDescription) {
             self.label = label
             self.typeDescription = typeDescription
         }
-
+        
         public let label: String?
         public let typeDescription: TypeDescription
     }
-
+    
     public var isOptional: Bool {
         switch self {
         case .any,
-             .array,
-             .attributed,
-             .closure,
-             .composition,
-             .dictionary,
-             .implicitlyUnwrappedOptional,
-             .metatype,
-             .nested,
-             .simple,
-             .some,
-             .tuple,
-             .unknown,
-             .void:
+                .array,
+                .attributed,
+                .closure,
+                .composition,
+                .dictionary,
+                .implicitlyUnwrappedOptional,
+                .metatype,
+                .nested,
+                .simple,
+                .some,
+                .tuple,
+                .unknown,
+                .void:
             false
         case .optional:
             true
@@ -182,18 +182,18 @@ public enum TypeDescription: Codable, Hashable, Comparable, Sendable {
     public var isClosure: Bool {
         switch self {
         case .any,
-             .array,
-             .attributed,
-             .composition,
-             .dictionary,
-             .implicitlyUnwrappedOptional,
-             .metatype,
-             .nested,
-             .simple,
-             .some,
-             .tuple,
-             .unknown,
-             .void:
+                .array,
+                .attributed,
+                .composition,
+                .dictionary,
+                .implicitlyUnwrappedOptional,
+                .metatype,
+                .nested,
+                .simple,
+                .some,
+                .tuple,
+                .unknown,
+                .void:
             false
             
         case let .optional(typeDescription):
@@ -203,18 +203,18 @@ public enum TypeDescription: Codable, Hashable, Comparable, Sendable {
             true
         }
     }
-
+    
     var strippingGenerics: TypeDescription {
         switch self {
         case let .simple(name, _):
-            .simple(name: name, generics: [])
+                .simple(name: name, generics: [])
         case let .nested(name, parentType, _):
-            .nested(name: name, parentType: parentType, generics: [])
+                .nested(name: name, parentType: parentType, generics: [])
         case .array, .attributed, .any, .closure, .composition, .dictionary, .implicitlyUnwrappedOptional, .metatype, .optional, .some, .tuple, .unknown, .void:
             self
         }
     }
-
+    
     /// A representation of this type that may be wrapped in a single element tuple to ensure cohesiveness of the type description.
     private var wrappedIfAmbiguous: Self {
         switch self {
@@ -223,7 +223,7 @@ public enum TypeDescription: Codable, Hashable, Comparable, Sendable {
             self
         case .composition, .some, .any, .attributed, .closure:
             // These types contain spaces and may be ambigous without being wrapped.
-            .tuple([.init(self)])
+                .tuple([.init(self)])
         }
     }
 }
@@ -244,7 +244,7 @@ extension TypeSyntax {
                     generics: genericTypeVisitor.genericArguments
                 )
             }
-
+            
         } else if let typeIdentifier = MemberTypeSyntax(self) {
             let genericTypeVisitor = GenericArgumentVisitor(viewMode: .sourceAccurate)
             if let genericArgumentClause = typeIdentifier.genericArgumentClause {
@@ -255,29 +255,29 @@ extension TypeSyntax {
                 parentType: typeIdentifier.baseType.typeDescription,
                 generics: genericTypeVisitor.genericArguments
             )
-
+            
         } else if let typeIdentifiers = CompositionTypeSyntax(self) {
             return .composition(UnorderedEquatingCollection(typeIdentifiers.elements.map(\.type.typeDescription)))
-
+            
         } else if let typeIdentifier = OptionalTypeSyntax(self) {
             return .optional(typeIdentifier.wrappedType.typeDescription)
-
+            
         } else if let typeIdentifier = ImplicitlyUnwrappedOptionalTypeSyntax(self) {
             return .implicitlyUnwrappedOptional(typeIdentifier.wrappedType.typeDescription)
-
+            
         } else if let typeIdentifier = SomeOrAnyTypeSyntax(self) {
             if typeIdentifier.someOrAnySpecifier.text == "some" {
                 return .some(typeIdentifier.constraint.typeDescription)
             } else {
                 return .any(typeIdentifier.constraint.typeDescription)
             }
-
+            
         } else if let typeIdentifier = MetatypeTypeSyntax(self) {
             return .metatype(
                 typeIdentifier.baseType.typeDescription,
                 isType: typeIdentifier.metatypeSpecifier.text == "Type"
             )
-
+            
         } else if let typeIdentifier = AttributedTypeSyntax(self) {
             let attributes: [String] = typeIdentifier.attributes.compactMap {
                 AttributeSyntax($0)?.attributeName.as(IdentifierTypeSyntax.self)?.name.text
@@ -287,16 +287,16 @@ extension TypeSyntax {
                 specifiers: typeIdentifier.specifiers.textRepresentation,
                 attributes: attributes.isEmpty ? nil : attributes
             )
-
+            
         } else if let typeIdentifier = ArrayTypeSyntax(self) {
             return .array(element: typeIdentifier.element.typeDescription)
-
+            
         } else if let typeIdentifier = DictionaryTypeSyntax(self) {
             return .dictionary(
                 key: typeIdentifier.key.typeDescription,
                 value: typeIdentifier.value.typeDescription
             )
-
+            
         } else if let typeIdentifier = TupleTypeSyntax(self) {
             let elements = typeIdentifier.elements.map {
                 TypeDescription.TupleElement(
@@ -313,12 +313,12 @@ extension TypeSyntax {
             } else {
                 return .tuple(elements)
             }
-
+            
         } else if ClassRestrictionTypeSyntax(self) != nil {
             // A class restriction is the same as requiring inheriting from AnyObject:
             // https://forums.swift.org/t/class-only-protocols-class-vs-anyobject/11507/4
             return .simple(name: "AnyObject")
-
+            
         } else if let typeIdentifier = FunctionTypeSyntax(self) {
             return .closure(
                 arguments: typeIdentifier.parameters.map(\.type.typeDescription),
@@ -326,7 +326,7 @@ extension TypeSyntax {
                 doesThrow: typeIdentifier.effectSpecifiers?.throwsClause?.throwsSpecifier != nil,
                 returnType: typeIdentifier.returnClause.type.typeDescription
             )
-
+            
         } else {
             // The description is a source-accurate description of this node, so it is a reasonable fallback.
             return .unknown(text: trimmedDescription)
@@ -338,7 +338,7 @@ extension ExprSyntax {
     public var typeDescription: TypeDescription {
         if let typeExpr = TypeExprSyntax(self) {
             return typeExpr.type.typeDescription
-
+            
         } else if let declReferenceExpr = DeclReferenceExprSyntax(self) {
             return TypeSyntax(
                 IdentifierTypeSyntax(
@@ -457,9 +457,12 @@ extension ExprSyntax {
 
 private final class GenericArgumentVisitor: SyntaxVisitor {
     private(set) var genericArguments = [TypeDescription]()
-
+    
     override func visit(_ node: GenericArgumentSyntax) -> SyntaxVisitorContinueKind {
-        genericArguments.append(node.argument.typeDescription)
+        if let typeSyntax = TypeSyntax(node.argument) {
+            genericArguments.append(typeSyntax.typeDescription)
+        }
+        
         return .skipChildren
     }
 }

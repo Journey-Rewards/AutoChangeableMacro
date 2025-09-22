@@ -18,13 +18,14 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/openium/swift-syntax-xcframeworks", exact: "600.0.1"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", "509.0.0"..<"602.0.0")
     ],
     targets: [
         .macro(
             name: "AutoChangeableMacros",
             dependencies: [
-                .product(name: "SwiftSyntaxWrapper", package: "swift-syntax-xcframeworks")
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
             ]
         ),
         .target(name: "AutoChangeable", dependencies: ["AutoChangeableMacros"]),
